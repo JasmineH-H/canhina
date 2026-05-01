@@ -1,0 +1,36 @@
+.mainpanel{
+  margin-left: 120px;
+  margin-right: 120px;
+}
+
+
+.apply{
+  width:100px;
+  padding: 15px 10px;
+  background-color: var(--btn-bg);
+  color: var(--bg);
+  text-align: center;
+  font-weight: 600;
+  font-size: 25px;
+}
+
+
+.path{
+  display: flex;
+  gap:10px;
+  align-items: center;
+}
+
+.arrow{
+  color:var(--text-link);
+  font-size: 14px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.underline-text{
+  text-decoration: underline;
+  color:var(--text-link);
+  font-size: 14px;
+  text-align: center;
+}

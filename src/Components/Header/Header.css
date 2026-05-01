@@ -1,0 +1,47 @@
+.header{
+  margin-left: 120px;
+  margin-right: 120px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  height:80px;
+}
+
+.logo-section{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  gap:12px;
+}
+
+.logo{
+  width:auto;
+  height:60px;
+  border: 1px solid var(--border);
+}
+
+.logo-text{
+  width:125px;
+}
+
+.logo-text-cn{
+  font: var(--cn);
+  width:125px;
+
+}
+
+.search-bar{
+  display: flex;
+  align-items: center;
+}
+
+.search-input{
+  padding:3px;
+}
+
+.search-btn{
+  padding: 5px 5px;
+  background: var(--btn-bg);
+  width:15px;
+}
+
