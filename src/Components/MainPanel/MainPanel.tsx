@@ -14,6 +14,11 @@ const MainPanel = () => {
         <p className="underline-text">Statement
         Submission</p>
       </div>
+      <div className="main-subtitle">
+        <h3>Statement</h3>
+        <h2>Create your profile and enter the pool</h2>
+        <hr className="redline" />
+      </div>
     </div>
   );
 };

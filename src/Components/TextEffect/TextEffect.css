@@ -1,0 +1,38 @@
+.text-box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin-right: 20px;
+  width: 97%;
+  height: 100%;
+
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  padding-left: 20px;
+
+}
+
+.scroll {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  
+
+  animation: scrollUp var(--speed, 20s) linear infinite;
+}
+
+.scroll p{
+  font: var(--cn);
+  opacity: 0.2;
+}
+
+@keyframes scrollUp {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-50%);
+  }
+}
