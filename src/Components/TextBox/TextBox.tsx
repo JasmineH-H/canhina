@@ -1,8 +1,9 @@
 import { TypeAnimation } from "react-type-animation";
-import { useEffect, useRef, useState } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 import "./TextBox.css";
 
-const SKIP_TYPE_ANIMATION = import.meta.env.DEV;
+const SKIP_TYPE_ANIMATION = false;
+const POPOVER_HIDE_DELAY = 350;
 
 type TextBoxProps = {
   onSubmit: () => void;
@@ -24,83 +25,289 @@ export default function TextBox({
   const [currentAnimation, setCurrentAnimation] = useState(
     SKIP_TYPE_ANIMATION ? 21 : 1,
   );
-  const [showStandardizePreview, setShowStandardizePreview] = useState(false);
+  const letterBoxRef = useRef<HTMLDivElement | null>(null);
   const fixedTextRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const suggestionTextRefs = useRef<Array<HTMLSpanElement | null>>([]);
+  const hidePopoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const hideAiPopoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const standardizeSuggestions = [
+    "Dear Immigration Officer,\n\nMy name is Ricardo (Yuming Zhang). Since my initial entry into Canada on August 24, 2015, I have resided in Canada for over eleven years (approximately more than 3,900 days), Canada has become my primary country of residence and long-term development.",
+    "Throughout my long-term residence in Canada, I have complied with all applicable laws and regulations and have no adverse records. I have established a stable lifestyle, including consistent housing, regular employment, and ongoing self-improvement.",
+    "Canada’s multicultural environment has had a significant and positive impact on my personal development, career planning, and values.",
+  ];
 
   // standardize text count
-  const [fixedCount, setFixedCount] = useState(0);
+  const [fixedParts, setFixedParts] = useState([false, false, false]);
+  const [lastFixedPart, setLastFixedPart] = useState<number | null>(null);
+  const [activeSuggestionPart, setActiveSuggestionPart] = useState<
+    number | null
+  >(null);
+  const [popoverPosition, setPopoverPosition] = useState({
+    left: 0,
+    maxHeight: 260,
+    top: 0,
+  });
+  const [activeAiSuggestion, setActiveAiSuggestion] = useState<number | null>(
+    null,
+  );
+  const [aiPopoverPosition, setAiPopoverPosition] = useState({
+    left: 0,
+    maxHeight: 180,
+    top: 0,
+  });
+  const fixedCount = fixedParts.filter(Boolean).length;
 
   const getErrorTextClassName = (partNumber: number, isActive: boolean) => {
     const classNames = ["error-text"];
+    const isFixed = fixedParts[partNumber - 1];
 
     if (isActive) {
       classNames.push("active");
     }
 
-    if (fixedCount === partNumber - 1) {
-      classNames.push("standardize-target");
+    if (isActive && !isFixed) {
+      classNames.push("standardize-target", "has-fix-suggestion");
     }
 
     return classNames.join(" ");
   };
 
-  const handleFix = () => {
-    if (fixedCount < 3) {
-      setShowStandardizePreview(false);
-      setFixedCount((prev) => prev + 1);
-      onStandardizeStep();
-    }
-  };
+  const handleFix = (partNumber: number) => {
+    const partIndex = partNumber - 1;
 
-  useEffect(() => {
-    if (fixedCount === 0) {
+    if (fixedParts[partIndex]) {
       return;
     }
 
-    fixedTextRefs.current[fixedCount - 1]?.scrollIntoView({
+    setFixedParts((prev) => {
+      const next = [...prev];
+      next[partIndex] = true;
+      return next;
+    });
+    setLastFixedPart(partNumber);
+    setActiveSuggestionPart(null);
+    onStandardizeStep();
+  };
+
+  const clearHidePopoverTimer = () => {
+    if (hidePopoverTimerRef.current) {
+      clearTimeout(hidePopoverTimerRef.current);
+      hidePopoverTimerRef.current = null;
+    }
+  };
+
+  const clearHideAiPopoverTimer = () => {
+    if (hideAiPopoverTimerRef.current) {
+      clearTimeout(hideAiPopoverTimerRef.current);
+      hideAiPopoverTimerRef.current = null;
+    }
+  };
+
+  const getPopoverPosition = (
+    targetRect: DOMRect,
+    width: number,
+    maxHeight: number,
+  ) => {
+    const popoverWidth = Math.min(width, window.innerWidth - 32);
+    const left = Math.min(
+      Math.max(targetRect.left, 16),
+      window.innerWidth - popoverWidth - 16,
+    );
+    const top = targetRect.bottom + 8;
+    const availableHeight = window.innerHeight - top - 16;
+
+    return {
+      left,
+      maxHeight: Math.max(120, Math.min(maxHeight, availableHeight)),
+      top,
+    };
+  };
+
+  const getPopoverPositionFromPoint = (
+    point: { x: number; y: number },
+    width: number,
+    maxHeight: number,
+  ) => {
+    const popoverWidth = Math.min(width, window.innerWidth - 32);
+    const left = Math.min(
+      Math.max(point.x - 24, 16),
+      window.innerWidth - popoverWidth - 16,
+    );
+    const top = point.y + 12;
+    const availableHeight = window.innerHeight - top - 16;
+
+    return {
+      left,
+      maxHeight: Math.max(120, Math.min(maxHeight, availableHeight)),
+      top,
+    };
+  };
+
+  const hideFixSuggestion = () => {
+    clearHidePopoverTimer();
+    hidePopoverTimerRef.current = setTimeout(() => {
+      setActiveSuggestionPart(null);
+      hidePopoverTimerRef.current = null;
+    }, POPOVER_HIDE_DELAY);
+  };
+
+  const showFixSuggestion = (
+    partNumber: number,
+    isActive: boolean,
+    event: MouseEvent<HTMLSpanElement>,
+  ) => {
+    if (!isActive || fixedParts[partNumber - 1]) {
+      return;
+    }
+
+    clearHidePopoverTimer();
+
+    setPopoverPosition(
+      getPopoverPosition(event.currentTarget.getBoundingClientRect(), 620, 260),
+    );
+    setActiveSuggestionPart(partNumber);
+  };
+
+  const renderFixSuggestion = () => {
+    if (activeSuggestionPart === null) {
+      return null;
+    }
+
+    return (
+      <div
+        className="fix-popover"
+        role="tooltip"
+        style={popoverPosition}
+        onMouseEnter={clearHidePopoverTimer}
+        onMouseLeave={hideFixSuggestion}
+      >
+        <span className="fix-popover-title">Formalize</span>
+        <button
+          className="fix-suggestion-btn"
+          type="button"
+          onClick={() => handleFix(activeSuggestionPart)}
+        >
+          {standardizeSuggestions[activeSuggestionPart - 1]}
+        </button>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    if (lastFixedPart === null) {
+      return;
+    }
+
+    fixedTextRefs.current[lastFixedPart - 1]?.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
-  }, [fixedCount]);
+  }, [lastFixedPart]);
+
+  useEffect(() => {
+    return () => {
+      clearHidePopoverTimer();
+      clearHideAiPopoverTimer();
+    };
+  }, []);
 
   // suggestion text count
   const [acceptedCount, setAcceptedCount] = useState(0);
   const handleAccept = () => {
     if (acceptedCount < 3) {
+      setActiveAiSuggestion(null);
       setAcceptedCount((prev) => prev + 1);
       onEffectStep();
     }
   };
 
-  useEffect(() => {
-    if (acceptedCount === 0) {
+  const hideAiSuggestion = () => {
+    clearHideAiPopoverTimer();
+    hideAiPopoverTimerRef.current = setTimeout(() => {
+      setActiveAiSuggestion(null);
+      hideAiPopoverTimerRef.current = null;
+    }, POPOVER_HIDE_DELAY);
+  };
+
+  const showAiSuggestion = (
+    suggestionNumber: number,
+    event: MouseEvent<HTMLSpanElement>,
+  ) => {
+    if (acceptedCount !== suggestionNumber - 1) {
       return;
     }
 
-    suggestionTextRefs.current[acceptedCount - 1]?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
+    clearHideAiPopoverTimer();
+    setAiPopoverPosition(
+      getPopoverPositionFromPoint(
+        { x: event.clientX, y: event.clientY },
+        320,
+        180,
+      ),
+    );
+    setActiveAiSuggestion(suggestionNumber);
+  };
+
+  const renderAiSuggestion = () => {
+    if (activeAiSuggestion === null) {
+      return null;
+    }
+
+    return (
+      <div
+        className="ai-popover"
+        role="tooltip"
+        style={aiPopoverPosition}
+        onMouseEnter={clearHideAiPopoverTimer}
+        onMouseLeave={hideAiSuggestion}
+      >
+        <span className="ai-popover-title">AI writing</span>
+        <button className="ai-accept-btn" type="button" onClick={handleAccept}>
+          Accept
+        </button>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    if (fixedCount !== 3 || acceptedCount >= 3) {
+      return;
+    }
+
+    const animationFrame = requestAnimationFrame(() => {
+      const letterBox = letterBoxRef.current;
+      const activeSuggestion = suggestionTextRefs.current[acceptedCount];
+
+      if (!letterBox || !activeSuggestion) {
+        return;
+      }
+
+      const letterBoxRect = letterBox.getBoundingClientRect();
+      const suggestionRect = activeSuggestion.getBoundingClientRect();
+      letterBox.scrollTo({
+        behavior: "smooth",
+        top: letterBox.scrollTop + suggestionRect.top - letterBoxRect.top - 16,
+      });
     });
-  }, [acceptedCount]);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [acceptedCount, fixedCount]);
 
   const handleSubmit = () => {
     onSubmit();
   };
 
   return (
-    <div
-      className={
-        showStandardizePreview
-          ? "letter-page standardize-preview"
-          : "letter-page"
-      }
-    >
-      <div className="letter-box">
+    <div className="letter-page">
+      <div className="letter-box" ref={letterBoxRef}>
         <p>
           {/* Suggestion 1 */}
           {step >= 1 &&
-            (fixedCount >= 1 ? (
+            (fixedParts[0] ? (
               <span
                 className="fixed-text"
                 ref={(element) => {
@@ -114,7 +321,13 @@ export default function TextBox({
                 residence and long-term development.
               </span>
             ) : (
-              <span className={getErrorTextClassName(1, step >= 2)}>
+              <span
+                className={getErrorTextClassName(1, step >= 2)}
+                onMouseEnter={(event) =>
+                  showFixSuggestion(1, step >= 2, event)
+                }
+                onMouseLeave={hideFixSuggestion}
+              >
                 {SKIP_TYPE_ANIMATION && (
                   <>
                     Dear Officer<br></br>
@@ -347,7 +560,7 @@ export default function TextBox({
 
           {/* Sentence 2 */}
           {step >= 2 &&
-            (fixedCount >= 2 ? (
+            (fixedParts[1] ? (
               <span
                 className="fixed-text"
                 ref={(element) => {
@@ -362,7 +575,13 @@ export default function TextBox({
                 self-improvement.
               </span>
             ) : (
-              <span className={getErrorTextClassName(2, step >= 3)}>
+              <span
+                className={getErrorTextClassName(2, step >= 3)}
+                onMouseEnter={(event) =>
+                  showFixSuggestion(2, step >= 3, event)
+                }
+                onMouseLeave={hideFixSuggestion}
+              >
                 {SKIP_TYPE_ANIMATION && (
                   <>
                     {" "}
@@ -503,7 +722,7 @@ export default function TextBox({
 
           {/* Sentence 3 */}
           {step >= 3 &&
-            (fixedCount >= 3 ? (
+            (fixedParts[2] ? (
               <span
                 className="fixed-text"
                 ref={(element) => {
@@ -516,7 +735,13 @@ export default function TextBox({
                 values.<br></br><br></br>
               </span>
             ) : (
-              <span className={getErrorTextClassName(3, step >= 4)}>
+              <span
+                className={getErrorTextClassName(3, step >= 4)}
+                onMouseEnter={(event) =>
+                  showFixSuggestion(3, step >= 4, event)
+                }
+                onMouseLeave={hideFixSuggestion}
+              >
                 {SKIP_TYPE_ANIMATION && (
                   <>
                     {" "}
@@ -646,7 +871,7 @@ export default function TextBox({
             />
           )}
 
-          {step >= 5 && fixedCount >= 3 && (
+          {step >= 5 && fixedCount === 3 && (
             <>
               {/* Suggestion 1 */}
               {acceptedCount >= 0 && (
@@ -659,6 +884,8 @@ export default function TextBox({
                   ref={(element) => {
                     suggestionTextRefs.current[0] = element;
                   }}
+                  onMouseEnter={(event) => showAiSuggestion(1, event)}
+                  onMouseLeave={hideAiSuggestion}
                 >
                   {" "}
                   During my time in Canada, I completed both my secondary and
@@ -684,6 +911,8 @@ export default function TextBox({
                   ref={(element) => {
                     suggestionTextRefs.current[1] = element;
                   }}
+                  onMouseEnter={(event) => showAiSuggestion(2, event)}
+                  onMouseLeave={hideAiSuggestion}
                 >
                   {" "}
                   After graduation, I entered the workforce and secured
@@ -707,6 +936,8 @@ export default function TextBox({
                   ref={(element) => {
                     suggestionTextRefs.current[2] = element;
                   }}
+                  onMouseEnter={(event) => showAiSuggestion(3, event)}
+                  onMouseLeave={hideAiSuggestion}
                 >
                   {" "}
                   Based on my educational background, language proficiency, work
@@ -726,24 +957,8 @@ export default function TextBox({
           )}
         </p>
       </div>
-
-      {/* Button */}
-      {step >= 2 && fixedCount < 3 && (
-        <button
-          className="standardize-btn"
-          onClick={handleFix}
-          onMouseEnter={() => setShowStandardizePreview(true)}
-          onMouseLeave={() => setShowStandardizePreview(false)}
-        >
-          Standardize
-        </button>
-      )}
-
-      {step >= 4 && fixedCount >= 3 && acceptedCount < 3 && (
-        <button className="standardize-btn" onClick={handleAccept}>
-          Accept
-        </button>
-      )}
+      {renderFixSuggestion()}
+      {renderAiSuggestion()}
 
       <button
         className="submit-btn"
