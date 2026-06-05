@@ -35,8 +35,8 @@ export default function TextBox({
     null,
   );
   const standardizeSuggestions = [
-    "Dear Immigration Officer,\n\nMy name is Ricardo (Yuming Zhang). Since my initial entry into Canada on August 24, 2015, I have resided in Canada for over eleven years (approximately more than 3,900 days), Canada has become my primary country of residence and long-term development.",
-    "Throughout my long-term residence in Canada, I have complied with all applicable laws and regulations and have no adverse records. I have established a stable lifestyle, including consistent housing, regular employment, and ongoing self-improvement.",
+    "Dear Immigration Officer,\n\nMy name is Ricardo (Yuming Zhang). Since my initial entry into Canada on August 24, 2015, I have resided in Canada for over eleven years (approximately more than 3,900 days), Canada has become my primary country of residence and long-term development. ",
+    "Throughout my long-term residence in Canada, I have complied with all applicable laws and regulations and have no adverse records. I have established a stable lifestyle, including consistent housing, regular employment, and ongoing self-improvement. ",
     "Canada’s multicultural environment has had a significant and positive impact on my personal development, career planning, and values.",
   ];
 
@@ -537,7 +537,7 @@ export default function TextBox({
                       "of who I ",
                       800,
 
-                      "of who I wanted to become. ",
+                      "of who I wanted to become.",
                       3200,
 
                       () => {
@@ -585,7 +585,7 @@ export default function TextBox({
                 {SKIP_TYPE_ANIMATION && (
                   <>
                     {" "}
-                    I never imagined that eleven years latre this country would
+                     I never imagined that eleven years latre this country would
                     hold some of the most important memoreis, relationships, and
                     moments of growth in my entire life -{" "}
                   </>
@@ -594,16 +594,16 @@ export default function TextBox({
                 {!SKIP_TYPE_ANIMATION && currentAnimation >= 11 && (
                   <TypeAnimation
                     sequence={[
-                      "I never",
+                      " I never",
                       2000,
 
-                      "I never anticip",
+                      " I never anticip",
                       1600,
 
-                      "I never ",
+                      " I never ",
                       500,
 
-                      "I never imagined that ",
+                      " I never imagined that ",
                       500,
 
                       () => setCurrentAnimation(12),
@@ -699,7 +699,7 @@ export default function TextBox({
                       "and moments of growth in my entire life",
                       700,
 
-                      "and moments of growth in my entire life - ",
+                      "and moments of growth in my entire life -",
                       1300,
 
                       () => {
@@ -745,7 +745,7 @@ export default function TextBox({
                 {SKIP_TYPE_ANIMATION && (
                   <>
                     {" "}
-                    or that Canada would begin to feel more like home than
+                     or that Canada would begin to feel more like home than
                     anywere else in the world.
                   </>
                 )}
@@ -753,10 +753,10 @@ export default function TextBox({
                 {!SKIP_TYPE_ANIMATION && currentAnimation >= 16 && (
                   <TypeAnimation
                     sequence={[
-                      "or that Canada",
+                      " or that Canada",
                       1400,
 
-                      "or that Canada would ",
+                      " or that Canada would ",
                       100,
 
                       () => {
