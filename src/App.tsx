@@ -6,12 +6,22 @@ import FlickerScreen from "./Components/FlickerScreen/FlickerScreen";
 import TextEffect from "./Components/TextEffect/TextEffect";
 import TerminalLog from "./Components/TerminalLog/TerminalLog";
 
+const SUBMISSION_COUNT_STORAGE_KEY = "canina.totalSubmissions";
+
+function readStoredSubmissionCount() {
+  const storedCount = Number(
+    window.localStorage.getItem(SUBMISSION_COUNT_STORAGE_KEY),
+  );
+
+  return Number.isFinite(storedCount) ? storedCount : 0;
+}
+
 function App() {
   const [page, setPage] = useState<"main" | "terminal">("main");
   const [effectCount, setEffectCount] = useState(6);
   const [showFlicker, setShowFlicker] = useState(false);
-  const returnTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
+  const [submissionCount, setSubmissionCount] = useState(
+    readStoredSubmissionCount,
   );
   const flickerTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
@@ -35,6 +45,17 @@ function App() {
     }, 400);
   };
 
+  const handleSubmit = () => {
+    setSubmissionCount((prev) => {
+      const nextCount = prev + 1;
+      window.localStorage.setItem(
+        SUBMISSION_COUNT_STORAGE_KEY,
+        String(nextCount),
+      );
+      return nextCount;
+    });
+  };
+
   const handleStartOver = () => {
     setPage("terminal");
     setEffectCount(6);
@@ -45,15 +66,11 @@ function App() {
       flickerTimerRef.current = undefined;
     }
 
-    if (returnTimerRef.current) {
-      clearTimeout(returnTimerRef.current);
-    }
+  };
 
-    returnTimerRef.current = setTimeout(() => {
-      setPage("main");
-      setEffectCount(6);
-      returnTimerRef.current = undefined;
-    }, 15000);
+  const handleTerminalComplete = () => {
+    setPage("main");
+    setEffectCount(6);
   };
 
   return (
@@ -67,13 +84,17 @@ function App() {
             <MainPanel
               onEffectStep={handleEffectStep}
               onStandardizeStep={handleStandardizeStep}
+              onSubmit={handleSubmit}
               onStartOver={handleStartOver}
             />
             <TextEffect remainingCount={effectCount} />
           </div>
         </>
       ) : (
-        <TerminalLog />
+        <TerminalLog
+          submissionCount={submissionCount}
+          onShutdownComplete={handleTerminalComplete}
+        />
       )}
     </>
   );

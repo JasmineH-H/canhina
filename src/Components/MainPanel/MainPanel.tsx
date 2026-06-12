@@ -6,15 +6,22 @@ import "./MainPanel.css";
 type MainPanelProps = {
   onEffectStep: () => void;
   onStandardizeStep: () => void;
+  onSubmit: () => void;
   onStartOver: () => void;
 };
 
 const MainPanel = ({
   onEffectStep,
   onStandardizeStep,
+  onSubmit,
   onStartOver,
 }: MainPanelProps) => {
   const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = () => {
+    onSubmit();
+    setSubmitted(true);
+  };
 
   return (
     <div className="mainpanel">
@@ -39,7 +46,7 @@ const MainPanel = ({
             <hr className="redline" />
           </div>
           <TextBox
-            onSubmit={() => setSubmitted(true)}
+            onSubmit={handleSubmit}
             onEffectStep={onEffectStep}
             onStandardizeStep={onStandardizeStep}
           />

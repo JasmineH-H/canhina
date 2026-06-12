@@ -1,25 +1,143 @@
 .log-container {
-  background-color: #2b2b2b;
-  color: #00ff41;
-  font-size: 14px;
+  position: relative;
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(10, 255, 90, 0.025) 50%, transparent 50%),
+    radial-gradient(circle at center, #07140a 0%, #020503 58%, #000 100%);
+  background-size:
+    100% 4px,
+    100% 100%;
+  color: #538760;
+  font-size: 15px;
+  overflow: hidden;
+}
+
+.log-container::after {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0);
+  box-shadow: none;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.log-container.shutdown {
+  animation: terminal-power-off-bg 1.35s ease-in forwards;
+}
+
+.log-container.shutdown::after {
+  animation: terminal-shutdown-line 1.35s ease-in forwards;
 }
 
 .log {
-  margin: auto auto; /* Center horizontally */
-  padding: 80px 90px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 42px 56px;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  max-width: 1200px;
-  max-height: 100vh;
+  width: min(100%, calc(34ch + 112px));
+  overflow: hidden;
+  color: inherit;
+  font-family:
+    "Courier New",
+    Courier,
+    monospace;
+  font-size: inherit;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.16;
+  /* text-shadow:
+    0 0 4px rgba(0, 255, 65, 0.9),
+    0 0 12px rgba(0, 255, 65, 0.35); */
+  text-align: left;
+  white-space: pre-wrap;
 }
 
-.log p {
-  margin: 0;
+.log-container.shutdown .log {
+  animation: terminal-text-off 120ms step-end forwards;
 }
 
-.log ul {
-  margin: 0;
-  list-style: disc;
-  padding-left: 40px;
+.log-text {
+  animation: terminal-text-flicker 160ms steps(2, end);
+}
+
+.terminal-cursor {
+  display: inline-block;
+  margin-left: 2px;
+  animation: terminal-cursor-blink 700ms step-end infinite;
+}
+
+@keyframes terminal-text-flicker {
+  50% {
+    opacity: 0.78;
+  }
+}
+
+@keyframes terminal-cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes terminal-text-off {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes terminal-shutdown-line {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+
+  18% {
+    width: min(82vw, 720px);
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow:
+      0 0 10px rgba(255, 255, 255, 0.9),
+      0 0 28px rgba(255, 255, 255, 0.6);
+  }
+
+  72% {
+    width: min(82vw, 720px);
+    opacity: 1;
+  }
+
+  100% {
+    width: 0;
+    opacity: 0;
+    background: rgba(255, 255, 255, 0);
+    box-shadow: none;
+  }
+}
+
+@keyframes terminal-power-off-bg {
+  0%,
+  68% {
+    background-color: transparent;
+  }
+
+  100% {
+    background: #000;
+    color: transparent;
+  }
+}
+
+@media (max-width: 640px) {
+  .log-container {
+    font-size: 12px;
+  }
+
+  .log {
+    padding: 28px 24px;
+  }
 }
