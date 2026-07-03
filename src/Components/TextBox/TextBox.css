@@ -9,10 +9,10 @@
 }
 
 .letter-box {
-  width: 900px;
+  width: 1000px;
   font-size: 15px;
   line-height: 1.7;
-  padding: 10px 40px;
+  padding: 10px 20px;
   background: #e1e1e1;
   z-index: 10;
   overflow-y: auto;
