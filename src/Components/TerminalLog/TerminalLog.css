@@ -57,7 +57,8 @@
 }
 
 .log-container.shutdown .log {
-  animation: terminal-text-off 120ms step-end forwards;
+  animation: terminal-text-collapse 100ms cubic-bezier(0.78, 0, 1, 0.38) forwards;
+  transform-origin: center center;
 }
 
 .log-text {
@@ -82,23 +83,40 @@
   }
 }
 
-@keyframes terminal-text-off {
+@keyframes terminal-text-collapse {
   0% {
     opacity: 1;
+    filter: brightness(1);
+    transform: scaleY(1) scaleX(1);
+  }
+
+  28% {
+    opacity: 0.8;
+    filter: brightness(1.8);
+    transform: scaleY(0.62) scaleX(1.02);
+  }
+
+  66% {
+    opacity: 0.5;
+    filter: brightness(2.5) blur(0.4px);
+    transform: scaleY(0.08) scaleX(1.08);
   }
 
   100% {
     opacity: 0;
+    filter: brightness(3) blur(1.2px);
+    transform: scaleY(0.002) scaleX(0.92);
   }
 }
 
 @keyframes terminal-shutdown-line {
-  0% {
+  0%,
+  24% {
     width: 0;
     opacity: 0;
   }
 
-  18% {
+  32% {
     width: min(82vw, 720px);
     opacity: 1;
     background: rgba(255, 255, 255, 0.96);
@@ -107,7 +125,7 @@
       0 0 28px rgba(255, 255, 255, 0.6);
   }
 
-  72% {
+  78% {
     width: min(82vw, 720px);
     opacity: 1;
   }

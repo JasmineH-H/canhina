@@ -3,7 +3,7 @@ import "./TerminalLog.css";
 
 const CHARACTER_PRINT_DELAY = 24;
 const SHUTDOWN_DELAY = 5000;
-const SHUTDOWN_ANIMATION_DURATION = 1350;
+const SHUTDOWN_ANIMATION_DURATION = 3350;
 
 type TerminalLogProps = {
   onShutdownComplete: () => void;

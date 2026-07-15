@@ -32,11 +32,11 @@ const MainPanel = ({
       ) : (
         <>
           <div className="path">
-            <p className="underline-text">Canina.na</p>
+            <p className="underline-text">Canhina.na</p>
             <p className="arrow">{">"}</p>
             <p className="underline-text">Immigration and citizenship</p>
             <p className="arrow">{">"}</p>
-            <p className="underline-text">Live in Canina</p>
+            <p className="underline-text">Live in Canhina</p>
             <p className="arrow">{">"}</p>
             <p className="underline-text">Statement Submission</p>
           </div>

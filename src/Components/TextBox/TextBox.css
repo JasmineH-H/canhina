@@ -46,7 +46,7 @@
   width: min(620px, 80vw);
   max-height: 260px;
   overflow-y: auto;
-  padding: 14px 18px 16px;
+  padding: 10px;
   background: #fff;
   border: 1px solid #d0d0d0;
   border-radius: 10px;
@@ -68,7 +68,7 @@
 
 .fix-popover-title {
   display: block;
-  margin-bottom: 8px;
+  margin: 4px 8px 8px;
   font-size: 16px;
   color: #6d7897;
 }
@@ -76,8 +76,9 @@
 .fix-suggestion-btn {
   display: block;
   width: 100%;
-  padding: 0;
+  padding: 10px 8px 12px;
   border: 0;
+  border-radius: 8px;
   background: transparent;
   color: #4169e1;
   cursor: pointer;
@@ -91,8 +92,44 @@
 
 .fix-suggestion-btn:hover,
 .fix-suggestion-btn:focus-visible {
+  background: #F1F2FC;
   color: #274fca;
   outline: none;
+}
+
+.fix-dismiss-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #727272;
+  cursor: pointer;
+  font: inherit;
+  font-size: 18px;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.fix-dismiss-btn:hover,
+.fix-dismiss-btn:focus-visible {
+  background: #F1F2FC;
+  color: #222;
+  outline: none;
+}
+
+.fix-dismiss-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  stroke: #6d7897;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
 }
 
 .ai-popover {

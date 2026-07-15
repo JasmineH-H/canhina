@@ -42,7 +42,7 @@ function App() {
     flickerTimerRef.current = setTimeout(() => {
       setShowFlicker(false);
       flickerTimerRef.current = undefined;
-    }, 400);
+    }, 700);
   };
 
   const handleSubmit = () => {

@@ -4,97 +4,240 @@
   z-index: 9999;
   pointer-events: none;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.24);
-  animation: full-screen-rgb-flicker 0.24s steps(1, end) infinite;
+  background:
+    linear-gradient(90deg, rgba(255, 0, 64, 0.1), rgba(0, 255, 255, 0.09)),
+    rgba(0, 0, 0, 0.14);
+  color: #f5f7ff;
+  font-family: "Courier New", monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: breach-flash 0.7s steps(1, end) both;
 }
 
 .screen-issue-overlay::before,
 .screen-issue-overlay::after {
   content: "";
   position: absolute;
-  inset: -4%;
+  inset: -8%;
 }
 
 .screen-issue-overlay::before {
-  background: rgba(159, 106, 95, 0.302);
-  animation: red-screen-shift 0.24s steps(1, end) infinite;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.22) 0,
+      rgba(255, 255, 255, 0.22) 1px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0) 5px
+    );
+  mix-blend-mode: screen;
+  opacity: 0.38;
+  animation:
+    scanline-roll 0.16s linear infinite,
+    scanline-stutter 0.7s steps(1, end) both;
 }
 
 .screen-issue-overlay::after {
-  background: rgba(96, 122, 150, 0.213);
-  animation: blue-screen-shift 0.24s steps(1, end) infinite;
+  background:
+    linear-gradient(90deg, rgba(255, 0, 48, 0.26), rgba(0, 0, 0, 0) 38%),
+    linear-gradient(270deg, rgba(0, 232, 255, 0.24), rgba(0, 0, 0, 0) 36%);
+  mix-blend-mode: screen;
+  animation: channel-tear 0.12s steps(2, end) infinite;
 }
 
-@keyframes full-screen-rgb-flicker {
-  0% {
-    opacity: 0.7;
-    background: rgba(0, 0, 0, 0.2);
-    filter: saturate(2.2) contrast(1.15);
-  }
-  25% {
-    opacity: 0.7;
-    background: rgba(0, 0, 0, 0.2);
-    filter: saturate(2.6) contrast(1.25);
-  }
-  50% {
-    opacity: 0.82;
-    background: rgba(255, 255, 255, 0.42);
-    filter: saturate(2.3) contrast(1.18);
-  }
-  75% {
-    opacity: 0.88;
-    background: rgba(0, 0, 0, 0.52);
-    filter: saturate(0.5) contrast(1.45);
-  }
-  100% {
-    opacity: 0.72;
-    background: rgba(0, 0, 0, 0.2);
-    filter: saturate(2.1) contrast(1.15);
-  }
+.screen-issue-noise {
+  position: absolute;
+  inset: -8%;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0) 28px,
+      rgba(255, 255, 255, 0.08) 29px,
+      rgba(255, 255, 255, 0.08) 31px,
+      rgba(0, 0, 0, 0) 32px,
+      rgba(0, 0, 0, 0) 54px
+    ),
+    repeating-radial-gradient(
+      circle at 18% 23%,
+      rgba(255, 255, 255, 0.3) 0,
+      rgba(255, 255, 255, 0.3) 1px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0) 6px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 0, 64, 0.16) 0,
+      rgba(255, 0, 64, 0.16) 3px,
+      rgba(0, 255, 255, 0.14) 4px,
+      rgba(0, 255, 255, 0.14) 7px,
+      rgba(0, 0, 0, 0) 8px,
+      rgba(0, 0, 0, 0) 18px
+    );
+  opacity: 0.16;
+  transform: translate3d(0, 0, 0);
+  animation: noise-jump 0.12s steps(2, end) infinite;
 }
 
-@keyframes red-screen-shift {
+.screen-issue-tears {
+  position: absolute;
+  inset: -8%;
+  background:
+    linear-gradient(
+      0deg,
+      rgba(255, 0, 64, 0) 0%,
+      rgba(255, 0, 64, 0) 11%,
+      rgba(255, 0, 64, 0.34) 12%,
+      rgba(0, 229, 255, 0.24) 15%,
+      rgba(255, 0, 64, 0) 17%,
+      rgba(255, 0, 64, 0) 36%,
+      rgba(0, 229, 255, 0.32) 37%,
+      rgba(255, 255, 255, 0.24) 39%,
+      rgba(255, 0, 64, 0) 42%,
+      rgba(255, 0, 64, 0) 66%,
+      rgba(255, 0, 64, 0.28) 67%,
+      rgba(0, 229, 255, 0.18) 70%,
+      rgba(255, 0, 64, 0) 72%
+    );
+  mix-blend-mode: screen;
+  opacity: 0.8;
+  animation: block-tear 0.7s steps(1, end) both;
+}
+
+@keyframes breach-flash {
   0% {
-    transform: translate(-10px, 0);
+    opacity: 0;
+    filter: contrast(1) saturate(1);
+  }
+  8% {
+    opacity: 1;
+    filter: contrast(2) saturate(1.9) hue-rotate(16deg);
+  }
+  16% {
+    background: rgba(255, 255, 255, 0.4);
+    filter: contrast(2.8) saturate(0.3);
+  }
+  28% {
+    background:
+      linear-gradient(90deg, rgba(255, 0, 64, 0.1), rgba(0, 255, 255, 0.1)),
+      rgba(0, 0, 0, 0.2);
+    filter: contrast(1.7) saturate(2.1);
+  }
+  42% {
+    filter: contrast(2.2) saturate(2.1) hue-rotate(-18deg);
+  }
+  56% {
+    filter: contrast(2.5) saturate(1.9) hue-rotate(18deg);
+  }
+  72% {
     opacity: 0.78;
-  }
-  24% {
-    transform: translate(12px, -6px);
-    opacity: 0.72;
-  }
-  25% {
-    transform: translate(12px, -6px);
-    opacity: 0;
+    filter: contrast(2.1) saturate(1.4);
   }
   100% {
-    transform: translate(12px, -6px);
     opacity: 0;
+    filter: contrast(1.4) saturate(0.6);
   }
 }
 
-@keyframes blue-screen-shift {
-  0% {
-    transform: translate(-16px, 8px);
-    opacity: 0;
+@keyframes scanline-roll {
+  from {
+    transform: translateY(-12px);
+  }
+  to {
+    transform: translateY(12px);
+  }
+}
+
+@keyframes scanline-stutter {
+  0%,
+  18%,
+  100% {
+    opacity: 0.34;
   }
   24% {
-    transform: translate(-16px, 8px);
-    opacity: 0;
+    opacity: 0.62;
   }
-  25% {
-    transform: translate(-16px, 8px);
-    opacity: 0.82;
+  36% {
+    opacity: 0.18;
   }
-  49% {
-    transform: translate(6px, -8px);
-    opacity: 0.76;
+  52% {
+    opacity: 0.56;
+  }
+  70% {
+    opacity: 0.24;
+  }
+}
+
+@keyframes channel-tear {
+  0% {
+    transform: translate(-16px, -6px) skewX(-3deg);
+    opacity: 0.52;
   }
   50% {
-    transform: translate(6px, -8px);
-    opacity: 0;
+    transform: translate(18px, 8px) skewX(4deg);
+    opacity: 0.38;
   }
   100% {
-    transform: translate(6px, -8px);
+    transform: translate(-8px, 4px) skewX(-2deg);
+    opacity: 0.48;
+  }
+}
+
+@keyframes noise-jump {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0.16;
+  }
+  33% {
+    transform: translate(-20px, 12px);
+    opacity: 0.24;
+  }
+  66% {
+    transform: translate(16px, -14px);
+    opacity: 0.18;
+  }
+  100% {
+    transform: translate(8px, 10px);
+    opacity: 0.16;
+  }
+}
+
+@keyframes block-tear {
+  0%,
+  12% {
     opacity: 0;
+    transform: translateX(0);
+  }
+  18% {
+    opacity: 0.92;
+    transform: translateX(-46px);
+  }
+  26% {
+    opacity: 0.42;
+    transform: translateX(38px);
+  }
+  34% {
+    opacity: 0.86;
+    transform: translateX(-22px);
+  }
+  48% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  58% {
+    opacity: 0.78;
+    transform: translateX(52px);
+  }
+  68% {
+    opacity: 0.34;
+    transform: translateX(-30px);
+  }
+  82% {
+    opacity: 0.72;
+    transform: translateX(24px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(0);
   }
 }
