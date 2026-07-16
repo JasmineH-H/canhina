@@ -2,7 +2,7 @@ import { TypeAnimation } from "react-type-animation";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 import "./TextBox.css";
 
-const SKIP_TYPE_ANIMATION = false;
+const SKIP_TYPE_ANIMATION = true;
 const POPOVER_HIDE_DELAY = 350;
 
 type TextBoxProps = {
