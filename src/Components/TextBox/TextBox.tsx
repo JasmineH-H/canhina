@@ -12,7 +12,7 @@ const POPOVER_HIDE_DELAY = 350;
 const FORMALIZE_PART_COUNT = 3;
 const AI_PART_COUNT = 3;
 const PART_COUNT = FORMALIZE_PART_COUNT + AI_PART_COUNT;
-const SKIP_FORMALIZE_TYPE_ANIMATION = true;
+const SKIP_FORMALIZE_TYPE_ANIMATION = false;
 const SKIP_AI_TYPE_ANIMATION = false;
 const SKIP_ALL_TYPE_ANIMATION = false;
 
@@ -150,7 +150,7 @@ function AnimatedPart({ onComplete, onCursorChange, steps }: AnimatedPartProps) 
   );
 }
 
-export default function TextBoxV7Breath({
+export default function TextBox({
   onSubmit,
   onEffectStep,
   onStandardizeStep,
