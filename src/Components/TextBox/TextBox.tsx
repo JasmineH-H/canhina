@@ -204,11 +204,10 @@ export default function TextBox({
     top: 0,
   });
 
-  const handledStandardizeCount =
-    fixedParts.filter(Boolean).length + dismissedParts.filter(Boolean).length;
-  const allFormalizeHandled =
-    handledStandardizeCount === FORMALIZE_PART_COUNT;
-  const canSubmit = fixedParts.some(Boolean);
+  const allFormalizeComplete = completedParts
+    .slice(0, FORMALIZE_PART_COUNT)
+    .every(Boolean);
+  const canSubmit = allFormalizeComplete;
   const stepParts = [...FORMALIZES_STEPS, ...AI_STEPS];
 
   const clearHidePopoverTimer = () => {
@@ -470,7 +469,7 @@ export default function TextBox({
     const canRenderFormalize = isFormalizePart && previousPartComplete;
     const canRenderAi =
       !isFormalizePart &&
-      allFormalizeHandled &&
+      allFormalizeComplete &&
       aiPartNumber - 1 <= acceptedCount &&
       previousPartComplete;
     const isComplete = completedParts[partIndex];
@@ -586,7 +585,7 @@ export default function TextBox({
   }, [lastFixedPart]);
 
   useEffect(() => {
-    if (!allFormalizeHandled || acceptedCount >= AI_PART_COUNT) return;
+    if (!allFormalizeComplete || acceptedCount >= AI_PART_COUNT) return;
 
     const animationFrame = requestAnimationFrame(() => {
       const letterBox = letterBoxRef.current;
@@ -602,7 +601,7 @@ export default function TextBox({
     });
 
     return () => cancelAnimationFrame(animationFrame);
-  }, [acceptedCount, allFormalizeHandled]);
+  }, [acceptedCount, allFormalizeComplete]);
 
   useEffect(() => {
     return () => {

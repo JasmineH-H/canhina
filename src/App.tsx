@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import Header from "./Components/Header/Header";
 import MainPanel from "./Components/MainPanel/MainPanel";
@@ -7,6 +7,11 @@ import TextEffect from "./Components/TextEffect/TextEffect";
 import TerminalLog from "./Components/TerminalLog/TerminalLog";
 
 const SUBMISSION_COUNT_STORAGE_KEY = "canina.totalSubmissions";
+const SUBMISSION_COUNT_API_PATH = "/api/submission-count";
+
+function saveStoredSubmissionCount(count: number) {
+  window.localStorage.setItem(SUBMISSION_COUNT_STORAGE_KEY, String(count));
+}
 
 function readStoredSubmissionCount() {
   const storedCount = Number(
@@ -14,6 +19,40 @@ function readStoredSubmissionCount() {
   );
 
   return Number.isFinite(storedCount) ? storedCount : 0;
+}
+
+async function readSharedSubmissionCount() {
+  const response = await fetch(SUBMISSION_COUNT_API_PATH, { cache: "no-store" });
+  if (!response.ok) throw new Error("Unable to read submission count");
+
+  const data = (await response.json()) as { count?: unknown };
+  return typeof data.count === "number" && Number.isFinite(data.count)
+    ? data.count
+    : 0;
+}
+
+async function incrementSharedSubmissionCount() {
+  const response = await fetch(SUBMISSION_COUNT_API_PATH, { method: "POST" });
+  if (!response.ok) throw new Error("Unable to update submission count");
+
+  const data = (await response.json()) as { count?: unknown };
+  return typeof data.count === "number" && Number.isFinite(data.count)
+    ? data.count
+    : 0;
+}
+
+async function setSharedSubmissionCount(count: number) {
+  const response = await fetch(SUBMISSION_COUNT_API_PATH, {
+    body: JSON.stringify({ count }),
+    headers: { "Content-Type": "application/json" },
+    method: "PUT",
+  });
+  if (!response.ok) throw new Error("Unable to sync submission count");
+
+  const data = (await response.json()) as { count?: unknown };
+  return typeof data.count === "number" && Number.isFinite(data.count)
+    ? data.count
+    : 0;
 }
 
 function App() {
@@ -48,12 +87,18 @@ function App() {
   const handleSubmit = () => {
     setSubmissionCount((prev) => {
       const nextCount = prev + 1;
-      window.localStorage.setItem(
-        SUBMISSION_COUNT_STORAGE_KEY,
-        String(nextCount),
-      );
+      saveStoredSubmissionCount(nextCount);
       return nextCount;
     });
+
+    void incrementSharedSubmissionCount()
+      .then((count) => {
+        saveStoredSubmissionCount(count);
+        setSubmissionCount(count);
+      })
+      .catch(() => {
+        // Browser storage remains as a fallback when the shared dev endpoint is unavailable.
+      });
   };
 
   const handleStartOver = () => {
@@ -72,6 +117,30 @@ function App() {
     setPage("main");
     setEffectCount(6);
   };
+
+  useEffect(() => {
+    let ignore = false;
+
+    void readSharedSubmissionCount()
+      .then(async (sharedCount) => {
+        if (ignore) return;
+        const storedCount = readStoredSubmissionCount();
+        const count =
+          storedCount > sharedCount
+            ? await setSharedSubmissionCount(storedCount)
+            : sharedCount;
+        if (ignore) return;
+        saveStoredSubmissionCount(count);
+        setSubmissionCount(count);
+      })
+      .catch(() => {
+        // Keep the locally stored browser value for static builds or file previews.
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   return (
     <>

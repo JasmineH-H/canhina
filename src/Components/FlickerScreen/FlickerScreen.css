@@ -5,9 +5,9 @@
   pointer-events: none;
   overflow: hidden;
   background:
-    linear-gradient(90deg, rgba(255, 0, 64, 0.1), rgba(0, 255, 255, 0.09)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.1)),
     rgba(0, 0, 0, 0.14);
-  color: #f5f7ff;
+  color: #f5f5f5;
   font-family: "Courier New", monospace;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -39,8 +39,8 @@
 
 .screen-issue-overlay::after {
   background:
-    linear-gradient(90deg, rgba(255, 0, 48, 0.26), rgba(0, 0, 0, 0) 38%),
-    linear-gradient(270deg, rgba(0, 232, 255, 0.24), rgba(0, 0, 0, 0) 36%);
+    linear-gradient(90deg, rgba(255, 255, 255, 0.22), rgba(0, 0, 0, 0) 38%),
+    linear-gradient(270deg, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0) 36%);
   mix-blend-mode: screen;
   animation: channel-tear 0.12s steps(2, end) infinite;
 }
@@ -67,10 +67,10 @@
     ),
     repeating-linear-gradient(
       90deg,
-      rgba(255, 0, 64, 0.16) 0,
-      rgba(255, 0, 64, 0.16) 3px,
-      rgba(0, 255, 255, 0.14) 4px,
-      rgba(0, 255, 255, 0.14) 7px,
+      rgba(255, 255, 255, 0.14) 0,
+      rgba(255, 255, 255, 0.14) 3px,
+      rgba(0, 0, 0, 0.16) 4px,
+      rgba(0, 0, 0, 0.16) 7px,
       rgba(0, 0, 0, 0) 8px,
       rgba(0, 0, 0, 0) 18px
     );
@@ -85,19 +85,19 @@
   background:
     linear-gradient(
       0deg,
-      rgba(255, 0, 64, 0) 0%,
-      rgba(255, 0, 64, 0) 11%,
-      rgba(255, 0, 64, 0.34) 12%,
-      rgba(0, 229, 255, 0.24) 15%,
-      rgba(255, 0, 64, 0) 17%,
-      rgba(255, 0, 64, 0) 36%,
-      rgba(0, 229, 255, 0.32) 37%,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 11%,
+      rgba(255, 255, 255, 0.34) 12%,
+      rgba(0, 0, 0, 0.24) 15%,
+      rgba(255, 255, 255, 0) 17%,
+      rgba(255, 255, 255, 0) 36%,
+      rgba(255, 255, 255, 0.32) 37%,
       rgba(255, 255, 255, 0.24) 39%,
-      rgba(255, 0, 64, 0) 42%,
-      rgba(255, 0, 64, 0) 66%,
-      rgba(255, 0, 64, 0.28) 67%,
-      rgba(0, 229, 255, 0.18) 70%,
-      rgba(255, 0, 64, 0) 72%
+      rgba(255, 255, 255, 0) 42%,
+      rgba(255, 255, 255, 0) 66%,
+      rgba(255, 255, 255, 0.28) 67%,
+      rgba(0, 0, 0, 0.18) 70%,
+      rgba(255, 255, 255, 0) 72%
     );
   mix-blend-mode: screen;
   opacity: 0.8;
@@ -107,35 +107,35 @@
 @keyframes breach-flash {
   0% {
     opacity: 0;
-    filter: contrast(1) saturate(1);
+    filter: grayscale(1) contrast(1);
   }
   8% {
     opacity: 1;
-    filter: contrast(2) saturate(1.9) hue-rotate(16deg);
+    filter: grayscale(1) contrast(2.2);
   }
   16% {
     background: rgba(255, 255, 255, 0.4);
-    filter: contrast(2.8) saturate(0.3);
+    filter: grayscale(1) contrast(2.8);
   }
   28% {
     background:
-      linear-gradient(90deg, rgba(255, 0, 64, 0.1), rgba(0, 255, 255, 0.1)),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.12)),
       rgba(0, 0, 0, 0.2);
-    filter: contrast(1.7) saturate(2.1);
+    filter: grayscale(1) contrast(1.9);
   }
   42% {
-    filter: contrast(2.2) saturate(2.1) hue-rotate(-18deg);
+    filter: grayscale(1) contrast(2.4);
   }
   56% {
-    filter: contrast(2.5) saturate(1.9) hue-rotate(18deg);
+    filter: grayscale(1) contrast(2.6);
   }
   72% {
     opacity: 0.78;
-    filter: contrast(2.1) saturate(1.4);
+    filter: grayscale(1) contrast(2.2);
   }
   100% {
     opacity: 0;
-    filter: contrast(1.4) saturate(0.6);
+    filter: grayscale(1) contrast(1.4);
   }
 }
 
