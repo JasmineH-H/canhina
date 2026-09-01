@@ -311,7 +311,7 @@ export const AI_1_STEPS: SourceStep[] = [
 ];
 
 export const AI_2_STEPS: SourceStep[] = [
-  T("Later, I chose Business Photo", 94),
+  T("Later, I chose Commercial Photo", 94),
   P(780),
 
   T("graphy as my college major.", 94),
