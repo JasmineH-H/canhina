@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import type { IncomingMessage } from 'node:http'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
@@ -44,46 +44,58 @@ function readRequestBody(req: IncomingMessage) {
   })
 }
 
+async function handleSubmissionCountRequest(
+  req: IncomingMessage,
+  res: ServerResponse,
+) {
+  if (req.method === 'GET') {
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify({ count: readSubmissionCount() }))
+    return true
+  }
+
+  if (req.method === 'POST') {
+    const nextCount = readSubmissionCount() + 1
+    writeSubmissionCount(nextCount)
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify({ count: nextCount }))
+    return true
+  }
+
+  if (req.method === 'PUT') {
+    try {
+      const body = await readRequestBody(req)
+      const data = body ? (JSON.parse(body) as { count?: unknown }) : {}
+      const count =
+        typeof data.count === 'number' && Number.isFinite(data.count)
+          ? Math.max(0, Math.floor(data.count))
+          : readSubmissionCount()
+
+      writeSubmissionCount(count)
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ count }))
+    } catch {
+      res.statusCode = 400
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ error: 'Invalid submission count' }))
+    }
+    return true
+  }
+
+  return false
+}
+
 function submissionCountPlugin(): Plugin {
   return {
     name: 'canina-submission-count',
     configureServer(server) {
       server.middlewares.use('/api/submission-count', async (req, res, next) => {
-        if (req.method === 'GET') {
-          res.setHeader('Content-Type', 'application/json')
-          res.end(JSON.stringify({ count: readSubmissionCount() }))
-          return
-        }
-
-        if (req.method === 'POST') {
-          const nextCount = readSubmissionCount() + 1
-          writeSubmissionCount(nextCount)
-          res.setHeader('Content-Type', 'application/json')
-          res.end(JSON.stringify({ count: nextCount }))
-          return
-        }
-
-        if (req.method === 'PUT') {
-          try {
-            const body = await readRequestBody(req)
-            const data = body ? (JSON.parse(body) as { count?: unknown }) : {}
-            const count =
-              typeof data.count === 'number' && Number.isFinite(data.count)
-                ? Math.max(0, Math.floor(data.count))
-                : readSubmissionCount()
-
-            writeSubmissionCount(count)
-            res.setHeader('Content-Type', 'application/json')
-            res.end(JSON.stringify({ count }))
-          } catch {
-            res.statusCode = 400
-            res.setHeader('Content-Type', 'application/json')
-            res.end(JSON.stringify({ error: 'Invalid submission count' }))
-          }
-          return
-        }
-
-        next()
+        if (!(await handleSubmissionCountRequest(req, res))) next()
+      })
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use('/api/submission-count', async (req, res, next) => {
+        if (!(await handleSubmissionCountRequest(req, res))) next()
       })
     },
   }

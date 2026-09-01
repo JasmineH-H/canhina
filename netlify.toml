@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/api/submission-count"
+  to = "/.netlify/functions/submission-count"
+  status = 200
