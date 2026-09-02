@@ -12,7 +12,7 @@ const POPOVER_HIDE_DELAY = 350;
 const FORMALIZE_PART_COUNT = 3;
 const AI_PART_COUNT = 3;
 const PART_COUNT = FORMALIZE_PART_COUNT + AI_PART_COUNT;
-const SKIP_FORMALIZE_TYPE_ANIMATION = false;
+const SKIP_FORMALIZE_TYPE_ANIMATION = true;
 const SKIP_AI_TYPE_ANIMATION = false;
 const SKIP_ALL_TYPE_ANIMATION = false;
 
@@ -470,7 +470,6 @@ export default function TextBox({
     const canRenderAi =
       !isFormalizePart &&
       allFormalizeComplete &&
-      aiPartNumber - 1 <= acceptedCount &&
       previousPartComplete;
     const isComplete = completedParts[partIndex];
     const skipCurrentAnimation = isFormalizePart
@@ -535,8 +534,8 @@ export default function TextBox({
         }}
         style={{ whiteSpace: "pre-line" }}
       >
+        {"\n"}
         {REPLACEMENT_PARTS[partIndex].text}
-        {partNumber < PART_COUNT ? "\n\n" : ""}
       </span>
     ) : (
       <span style={{ whiteSpace: "pre-line" }}>

@@ -127,7 +127,7 @@ export const FORMALIZES_2_STEPS: SourceStep[] = [
   R(2),
 ];
 export const FORMALIZES_3_STEPS: SourceStep[] = [
-  T(" or that Canada", 90),
+  T("or that Canada", 90),
   P(1400),
   T(" would ", 90),
   P(100),
@@ -145,7 +145,7 @@ export const FORMALIZES_3_STEPS: SourceStep[] = [
   T("anywere ", 200),
   P(100),
   T("else in the world.", 90),
-  P(1000),
+  P(2000),
   R(3),
 ];
 
@@ -156,8 +156,9 @@ export const FORMALIZES_STEPS: SourceStep[][] = [
 ];
 
 export const AI_1_STEPS: SourceStep[] = [
+  T("\n\n", 200),
   P(1800),
-  T("\n I enrolled in a ", 84),
+  T("I enrolled in a ", 84),
   P(200),
   T("modest-sized high school", 87),
   P(200),
@@ -311,6 +312,8 @@ export const AI_1_STEPS: SourceStep[] = [
 ];
 
 export const AI_2_STEPS: SourceStep[] = [
+  T("\n\n", 200),
+  P(1800),
   T("Later, I chose Commercial Photo", 94),
   P(780),
 
@@ -579,6 +582,8 @@ export const AI_2_STEPS: SourceStep[] = [
 ];
 
 export const AI_3_STEPS: SourceStep[] = [
+  T("\n\n", 200),
+  P(1800),
   T("Now, as my work permit is approaching its expiry date,", 94),
   P(560),
   T(" I have to seriously think about", 94),
@@ -688,6 +693,8 @@ export const AI_3_STEPS: SourceStep[] = [
   R(6),
 ];
 
+
+
 export const AI_STEPS: SourceStep[][] = [AI_1_STEPS, AI_2_STEPS, AI_3_STEPS];
 
 export type ReplacementPart = {
@@ -706,7 +713,7 @@ export const REPLACEMENT_PARTS: ReplacementPart[] = [
   },
   {
     id: 3,
-    text: "Canada’s multicultural environment has had a significant and positive impact on my personal development, career planning, and values.\n",
+    text: "Canada’s multicultural environment has had a significant and positive impact on my personal development, career planning, and values.",
   },
   {
     id: 4,
