@@ -200,8 +200,19 @@
   opacity: 1;
 } */
 
-.submit-btn{
-  grid-column: 2/1;
+.letter-actions {
+  grid-column: 1;
+  justify-self: left;
+  align-self: flex-start;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 1040px;
+  z-index: 10;
+}
+
+.submit-btn,
+.typing-start-over-btn {
   justify-self: right;
   align-self: flex-start;
   padding: 6px 26px;
@@ -212,7 +223,6 @@
   font-weight: 800;
   opacity: 0.9;
   border: none;
-  z-index: 10;
   margin: 0;
 }
 
@@ -228,13 +238,26 @@
   transition: 0.3s ease;
 }
 
+.ai-suggestion-hover-zone {
+  display: inline-block;
+  min-width: 100%;
+  width: 100%;
+}
+
 .suggestion-text.accepted {
   color: #222;
   cursor: default;
 }
 
-.suggestion-text:not(.accepted):hover {
+.suggestion-text:not(.accepted):hover,
+.suggestion-text-active {
   background-color: rgba(65, 105, 225, 0.08);
+}
+
+.ai-draft-text-highlighted {
+  background-color: rgba(65, 105, 225, 0.08);
+  text-decoration: line-through;
+  text-decoration-color: royalblue;
 }
 
 .typing-cursor {

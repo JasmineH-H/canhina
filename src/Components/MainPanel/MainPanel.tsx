@@ -8,6 +8,7 @@ type MainPanelProps = {
   onStandardizeStep: () => void;
   onSubmit: () => void;
   onStartOver: () => void;
+  onTypingStartOver: () => void;
 };
 
 const MainPanel = ({
@@ -15,12 +16,19 @@ const MainPanel = ({
   onStandardizeStep,
   onSubmit,
   onStartOver,
+  onTypingStartOver,
 }: MainPanelProps) => {
   const [submitted, setSubmitted] = useState(false);
+  const [typingResetKey, setTypingResetKey] = useState(0);
 
   const handleSubmit = () => {
     onSubmit();
     setSubmitted(true);
+  };
+
+  const handleTypingStartOver = () => {
+    onTypingStartOver();
+    setTypingResetKey((current) => current + 1);
   };
 
   return (
@@ -46,9 +54,11 @@ const MainPanel = ({
             <hr className="redline" />
           </div>
           <TextBox
+            key={typingResetKey}
             onSubmit={handleSubmit}
             onEffectStep={onEffectStep}
             onStandardizeStep={onStandardizeStep}
+            onStartOver={handleTypingStartOver}
           />
         </>
       )}

@@ -113,6 +113,16 @@ function App() {
 
   };
 
+  const handleTypingStartOver = () => {
+    setEffectCount(6);
+    setShowFlicker(false);
+
+    if (flickerTimerRef.current) {
+      clearTimeout(flickerTimerRef.current);
+      flickerTimerRef.current = undefined;
+    }
+  };
+
   const handleTerminalComplete = () => {
     setPage("main");
     setEffectCount(6);
@@ -155,6 +165,7 @@ function App() {
               onStandardizeStep={handleStandardizeStep}
               onSubmit={handleSubmit}
               onStartOver={handleStartOver}
+              onTypingStartOver={handleTypingStartOver}
             />
             <TextEffect remainingCount={effectCount} />
           </div>

@@ -20,6 +20,7 @@ type TextBoxProps = {
   onSubmit: () => void;
   onEffectStep: () => void;
   onStandardizeStep: () => void;
+  onStartOver: () => void;
 };
 
 type AnimationBlock = {
@@ -154,6 +155,7 @@ export default function TextBox({
   onSubmit,
   onEffectStep,
   onStandardizeStep,
+  onStartOver,
 }: TextBoxProps) {
   const letterBoxRef = useRef<HTMLDivElement | null>(null);
   const fixedTextRefs = useRef<Array<HTMLSpanElement | null>>([]);
@@ -327,7 +329,7 @@ export default function TextBox({
     isActive: boolean,
     event: MouseEvent<HTMLSpanElement>,
   ) => {
-    if (!isActive || acceptedCount !== suggestionNumber - 1) return;
+    if (!isActive || acceptedCount >= suggestionNumber) return;
 
     clearHideAiPopoverTimer();
     setAiPopoverPosition(
@@ -539,7 +541,13 @@ export default function TextBox({
       </span>
     ) : (
       <span style={{ whiteSpace: "pre-line" }}>
-        <span>
+        <span
+          className={
+            activeAiSuggestion === aiPartNumber
+              ? "ai-draft-text ai-draft-text-highlighted"
+              : "ai-draft-text"
+          }
+        >
           {skipCurrentAnimation ? (
             finalDraftText
           ) : (
@@ -554,23 +562,29 @@ export default function TextBox({
           )}
         </span>
         {!dismissedAiParts[aiPartNumber - 1] && (
-          <>
+          <span
+            className="ai-suggestion-hover-zone"
+            onMouseEnter={(event) =>
+              showAiSuggestion(aiPartNumber, true, event)
+            }
+            onMouseLeave={hideAiSuggestion}
+          >
             {" "}
             <span
-              className="suggestion-text"
+              className={
+                activeAiSuggestion === aiPartNumber
+                  ? "suggestion-text suggestion-text-active"
+                  : "suggestion-text"
+              }
               ref={(element) => {
                 suggestionTextRefs.current[aiPartNumber - 1] = element;
               }}
-              onMouseEnter={(event) =>
-                showAiSuggestion(aiPartNumber, true, event)
-              }
-              onMouseLeave={hideAiSuggestion}
             >
               {REPLACEMENT_PARTS[partIndex].text}
             </span>
-          </>
+          </span>
         )}
-        {partNumber < PART_COUNT ? "\n\n" : ""}
+        {/* {partNumber < PART_COUNT ? "\n\n" : ""} */}
       </span>
     );
   };
@@ -618,13 +632,22 @@ export default function TextBox({
       {renderFixSuggestion()}
       {renderAiSuggestion()}
 
-      <button
-        className="submit-btn"
-        disabled={!canSubmit}
-        onClick={onSubmit}
-      >
-        Submit
-      </button>
+      <div className="letter-actions">
+        <button
+          className="typing-start-over-btn"
+          type="button"
+          onClick={onStartOver}
+        >
+          Start Over
+        </button>
+        <button
+          className="submit-btn"
+          disabled={!canSubmit}
+          onClick={onSubmit}
+        >
+          Submit
+        </button>
+      </div>
     </div>
   );
 }
