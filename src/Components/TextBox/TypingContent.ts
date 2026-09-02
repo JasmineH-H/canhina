@@ -27,7 +27,7 @@ export const FORMALIZES_1_STEPS: SourceStep[] = [
   P(1600),
   D(4, 130),
   P(300),
-  T("Officer\n", 130),
+  T("Officer\n\n", 130),
   P(3800),
   T("When I first", 30),
   P(500),
