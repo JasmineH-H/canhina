@@ -80,9 +80,6 @@ STATUS:  [COMPLIANT]`.split("\n"),
   const [isShuttingDown, setIsShuttingDown] = useState(false);
 
   useEffect(() => {
-    setVisibleCharacterCount(0);
-    setIsShuttingDown(false);
-
     const printTimer = window.setInterval(() => {
       setVisibleCharacterCount((currentCount) => {
         if (currentCount >= logText.length) {
@@ -128,9 +125,13 @@ STATUS:  [COMPLIANT]`.split("\n"),
   }, [visibleCharacterCount]);
 
   return (
-    <div className={isShuttingDown ? "log-container shutdown" : "log-container"}>
+    <div
+      className={isShuttingDown ? "log-container shutdown" : "log-container"}
+    >
       <pre className="log" ref={logRef} aria-live="polite">
-        <span className="log-text">{logText.slice(0, visibleCharacterCount)}</span>
+        <span className="log-text">
+          {logText.slice(0, visibleCharacterCount)}
+        </span>
         {visibleCharacterCount < logText.length && (
           <span className="terminal-cursor" aria-hidden="true">
             █

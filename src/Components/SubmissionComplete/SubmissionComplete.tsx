@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./SubmissionComplete.css";
 
 type SubmissionCompleteProps = {
@@ -17,11 +17,7 @@ function formatDateTime(d: Date) {
 }
 
 const SubmissionComplete = ({ onStartOver }: SubmissionCompleteProps) => {
-  const [timestamp, setTimestamp] = useState("");
-
-  useEffect(() => {
-    setTimestamp(formatDateTime(new Date()));
-  }, []);
+  const [timestamp] = useState(() => formatDateTime(new Date()));
 
   return (
     <div className="submission-complete">
