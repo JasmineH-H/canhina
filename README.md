@@ -1,5 +1,7 @@
 # Canhina Statement Submission
 
+[Visit the published website](https://canhina.netlify.app)
+
 Canhina is an interactive React experience presented as a fictional immigration statement-submission portal. Visitors watch a personal statement take shape, correct highlighted language, review AI-generated revisions, and submit the finished statement through a deliberately bureaucratic interface.
 
 The project explores how an apparently helpful application process can standardize personal stories. Its interface combines animated typing, inline corrections, terminal logs, and a submission receipt.
